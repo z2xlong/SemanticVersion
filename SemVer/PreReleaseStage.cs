@@ -1,8 +1,8 @@
 namespace SemVer
 {
-    public enum SemVerPreStage
+    public enum PreReleaseStage
     {
-        None = 1024,
+        // None = 1024,
         /// <summary>
         /// This typically means that work on major features is still
         /// ongoing.

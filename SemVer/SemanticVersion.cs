@@ -3,7 +3,7 @@ namespace SemVer
     using System;
     using System.Globalization;
 
-    public partial class SemanticVersion : IComparable<SemanticVersion>, IFormattable
+    public partial class SemanticVersion : IFormattable
     {
         #region Field & Property
 
@@ -20,9 +20,7 @@ namespace SemVer
 
         public uint Patch { get; private set; }
 
-        public SemVerPreStage PreRelease { get; private set; }
-
-        public uint PreReleaseNum { get; private set; }
+        public PreRelease PreRelease { get; private set; }
 
         public uint Build { get; private set; }
 
@@ -30,31 +28,25 @@ namespace SemVer
 
         #region Ctor
         public SemanticVersion(uint major, uint minor, uint patch)
-            : this(major, minor, patch, SemVerPreStage.None, 0, 0)
+            : this(major, minor, patch, null, 0)
         { }
 
-        public SemanticVersion(uint major, uint minor, uint patch, SemVerPreStage prelease)
-            : this(major, minor, patch, prelease, 0, 0)
+        public SemanticVersion(uint major, uint minor, uint patch, PreRelease prelease)
+            : this(major, minor, patch, prelease, 0)
         { }
 
-        public SemanticVersion(uint major, uint minor, uint patch, SemVerPreStage prelease, uint preleaseNum)
-            : this(major, minor, patch, prelease, preleaseNum, 0)
-        { }
 
-        public SemanticVersion(uint major, uint minor, uint patch, SemVerPreStage prelease, uint preleaseNum, uint build)
+        public SemanticVersion(uint major, uint minor, uint patch, PreRelease prelease, uint build)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             PreRelease = prelease;
-            PreReleaseNum = preleaseNum;
             Build = build;
 
             _generalStr = string.Format("{0}.{1}.{2}", Major.ToString(), Minor.ToString(), Patch.ToString());
 
-            if (PreRelease != SemVerPreStage.None && PreReleaseNum > 0)
-                _comparableStr = string.Format("{0}-{1}.{2}", _generalStr, PreRelease.ToString(), PreReleaseNum.ToString());
-            else if (PreRelease != SemVerPreStage.None)
+            if (PreRelease != null)
                 _comparableStr = string.Format("{0}-{1}", _generalStr, PreRelease.ToString());
             else
                 _comparableStr = _generalStr;
@@ -65,25 +57,6 @@ namespace SemVer
                 _fullStr = string.Format("{0}+{1}", _comparableStr, Build.ToString());
         }
         #endregion
-
-        public int CompareTo(SemanticVersion other)
-        {
-            if (other == null)
-                return 1;
-
-            if (this.Major != other.Major)
-                return this.Major.CompareTo(other.Major);
-            if (this.Minor != other.Minor)
-                return this.Minor.CompareTo(other.Minor);
-            if (this.Patch != other.Patch)
-                return this.Patch.CompareTo(other.Patch);
-            if (this.PreRelease != other.PreRelease)
-                return this.PreRelease.CompareTo(other.PreRelease);
-            if (this.PreReleaseNum != other.PreReleaseNum)
-                return this.PreReleaseNum.CompareTo(other.PreReleaseNum);
-
-            return 0;
-        }
 
         #region IFormattable
         public override string ToString()
