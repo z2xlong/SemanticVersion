@@ -18,23 +18,18 @@ namespace SemVer.Test
         [FactAttribute]
         public void ComparableCtorTest()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, SemVerPreStage.Alpha);
+            PreRelease pre = new PreRelease(PreReleaseStage.Alpha);
+            SemanticVersion v = new SemanticVersion(0, 2, 1, pre);
             Assert.Equal("0.2.1-Alpha", v.ToString(""));
             Assert.Equal("0.2.1-Alpha", v.ToString("C"));
             Assert.Equal("0.2.1", v.ToString("G"));
         }
 
         [FactAttribute]
-        public void ComparableCtorTest2()
-        {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, SemVerPreStage.None, 5);
-            Assert.Equal("0.2.1", v.ToString());
-        }
-
-        [FactAttribute]
         public void FullCtorTest()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, SemVerPreStage.Beta, 5, 1000);
+            PreRelease pre = new PreRelease(PreReleaseStage.Beta, 5);
+            SemanticVersion v = new SemanticVersion(0, 2, 1, pre, 1000);
             Assert.Equal("0.2.1-Beta.5+1000", v.ToString());
             Assert.Equal("0.2.1-Beta.5", v.ToString("C"));
             Assert.Equal("0.2.1", v.ToString("G"));
@@ -62,7 +57,7 @@ namespace SemVer.Test
         public void GeneralBiggerThanPreRelease()
         {
             SemanticVersion v = new SemanticVersion(0, 2, 1);
-            SemanticVersion o = new SemanticVersion(0, 2, 1, SemVerPreStage.Alpha);
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
 
             Assert.True(v.CompareTo(o) == 1);
         }
@@ -70,8 +65,8 @@ namespace SemVer.Test
         [FactAttribute]
         public void PreReleaseBiggerPreRelease()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, SemVerPreStage.Beta);
-            SemanticVersion o = new SemanticVersion(0, 2, 1, SemVerPreStage.Alpha);
+            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Beta));
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
 
             Assert.True(v.CompareTo(o) == 1);
         }
@@ -79,8 +74,8 @@ namespace SemVer.Test
         [FactAttribute]
         public void PreReleaseLessThanPreRelease()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, SemVerPreStage.Alpha);
-            SemanticVersion o = new SemanticVersion(0, 2, 1, SemVerPreStage.Alpha, 1);
+            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha, 1));
 
             Assert.True(v.CompareTo(o) < 0);
         }
@@ -88,8 +83,8 @@ namespace SemVer.Test
         [FactAttribute]
         public void CompareWithBuild()
         {
-            SemanticVersion v = new SemanticVersion(1, 2, 5, SemVerPreStage.RC, 2, 1000);
-            SemanticVersion o = new SemanticVersion(1, 2, 5, SemVerPreStage.RC, 2, 10000);
+            SemanticVersion v = new SemanticVersion(1, 2, 5, new PreRelease(PreReleaseStage.RC, 2), 1000);
+            SemanticVersion o = new SemanticVersion(1, 2, 5, new PreRelease(PreReleaseStage.RC, 2), 10000);
 
             Assert.True(v.CompareTo(o) == 0);
         }

@@ -41,6 +41,16 @@ namespace SemVer
             return 0;
         }
 
+        public static int Compare(PreRelease a, PreRelease b)
+        {
+            if (a != null)
+                return a.CompareTo(b);
+            else if (b != null)
+                return b.CompareTo(a);
+            else
+                return 0;
+        }
+
         public override int GetHashCode()
         {
             return this.Stage.GetHashCode() ^ this.Number.GetHashCode();

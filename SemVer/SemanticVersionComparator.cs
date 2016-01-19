@@ -15,10 +15,8 @@ namespace SemVer
                 return this.Minor.CompareTo(other.Minor);
             if (this.Patch != other.Patch)
                 return this.Patch.CompareTo(other.Patch);
-            if (this.PreRelease != other.PreRelease)
-                return this.PreRelease.CompareTo(other.PreRelease);
 
-            return 0;
+            return PreRelease.Compare(this.PreRelease, other.PreRelease);
         }
 
         public static bool operator ==(SemanticVersion a, SemanticVersion b)
