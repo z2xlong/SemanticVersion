@@ -35,6 +35,9 @@ namespace SemVer
             : this(major, minor, patch, prelease, 0)
         { }
 
+        public SemanticVersion(uint major, uint minor, uint patch, uint build)
+            : this(major, minor, patch, null, build)
+        { }
 
         public SemanticVersion(uint major, uint minor, uint patch, PreRelease prelease, uint build)
         {
