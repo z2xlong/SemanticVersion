@@ -2,7 +2,6 @@ namespace SemVer
 {
     public enum PreReleaseStage
     {
-        // None = 1024,
         /// <summary>
         /// This typically means that work on major features is still
         /// ongoing.
@@ -19,6 +18,6 @@ namespace SemVer
         /// either done or cut, as well as tested and mostly ready.  Code
         /// should be mainly stable.
         /// </summary>
-        RC = 3,
+        RC = 4,
     }
 }

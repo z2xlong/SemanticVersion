@@ -16,41 +16,44 @@ namespace SemVer
                 return false;
 
             char brk = '.';
-            uint stage = 0, idx = 0, num = 0;
-            uint[] seg = new uint[5];
-            PreRelease prelease = null;
-
+            uint s = 0, i = 0, num = 0;
+            uint[] seg = new uint[6];
             char[] chs = str.ToCharArray();
 
-            while (idx < chs.Length && stage < 6)
+            while (i < chs.Length && s < seg.Length)
             {
-                if (stage == 3 && !TryParseToSemVerPreStage(chs, ref idx, out prelease))
-                    return false;
-
-                if (stage == 2)
-                    brk = '-';
-                else if (stage == 4)
-                    brk = '+';
-                else
-                    brk = '.';
-
-                if (TryParseToUint(chs, brk, ref idx, out num))
-                    seg[stage] = num;
-                else
-                    return false;
-
-                idx += 1;
-                stage += 1;
+                switch (brk)
+                {
+                    case '.':
+                        if (!TryParseToUint(chs, ref i, out num))
+                            return false;
+                        break;
+                    case '-':
+                        if (s != 3 || !TryParseToSemVerPreStage(chs, ref i, out num))
+                            return false;
+                        break;
+                    case '+':
+                        if (s < 3 || s > 5 || !TryParseToUint(chs, ref i, out num))
+                            return false;
+                        break;
+                    default:
+                        return false;
+                }
+                seg[s] = num;
+                brk = chs[i];
+                i += 1;
+                s += 1;
             }
 
-            if (idx < chs.Length || stage < 2)
+            if (i < chs.Length || s < 2)
                 return false;
 
-            version = new SemanticVersion(seg[0], seg[1], seg[2], prelease, seg[4]);
+            
+            // version = new SemanticVersion(seg[0], seg[1], seg[2], , seg[5]);
             return true;
         }
 
-        private static bool TryParseToUint(char[] chs, char brk, ref uint idx, out uint num)
+        private static bool TryParseToUint(char[] chs, ref uint idx, out uint num)
         {
             num = 0;
             uint n = 0;
@@ -67,24 +70,20 @@ namespace SemVer
 
                     result = result == null ? n : result * 10 + n;
                 }
-                else if (chs[idx] == brk)
-                    break;
                 else
-                    return false;
+                    break;
             }
 
             if (result == null)
                 return false;
-            else
-            {
-                num = (uint)result;
-                return true;
-            }
+
+            num = (uint)result;
+            return true;
         }
 
-        private static bool TryParseToSemVerPreStage(char[] chs, ref uint idx, out PreRelease prelease)
+        private static bool TryParseToSemVerPreStage(char[] chs, ref uint idx, out uint num)
         {
-            prelease = null;
+            num = 0;
 
             char[] ename = new char[5];
 
