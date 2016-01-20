@@ -65,4 +65,5 @@ namespace SemVer
                 ^ this.Build.GetHashCode();
         }
     }
+
 }

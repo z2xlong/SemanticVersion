@@ -4,7 +4,7 @@ namespace SemVer.Test
 {
     // see example explanation on xUnit.net website:
     // https://xunit.github.io/docs/getting-started-dnx.html
-    public class SampleTest
+    public class CompareTest
     {
         [Fact]
         public void GeneralCtorTest()
@@ -15,27 +15,27 @@ namespace SemVer.Test
             Assert.Equal("0.2.1", v.ToString("G"));
         }
 
-        [FactAttribute]
+        [Fact]
         public void ComparableCtorTest()
         {
-            PreRelease pre = new PreRelease(PreReleaseStage.Alpha);
+            PreRelease pre = new PreRelease(PreReleaseStage.ALPHA);
             SemanticVersion v = new SemanticVersion(0, 2, 1, pre);
-            Assert.Equal("0.2.1-Alpha", v.ToString(""));
-            Assert.Equal("0.2.1-Alpha", v.ToString("C"));
+            Assert.Equal("0.2.1-ALPHA", v.ToString(""));
+            Assert.Equal("0.2.1-ALPHA", v.ToString("C"));
             Assert.Equal("0.2.1", v.ToString("G"));
         }
 
-        [FactAttribute]
+        [Fact]
         public void FullCtorTest()
         {
-            PreRelease pre = new PreRelease(PreReleaseStage.Beta, 5);
+            PreRelease pre = new PreRelease(PreReleaseStage.BETA, 5);
             SemanticVersion v = new SemanticVersion(0, 2, 1, pre, 1000);
-            Assert.Equal("0.2.1-Beta.5+1000", v.ToString());
-            Assert.Equal("0.2.1-Beta.5", v.ToString("C"));
+            Assert.Equal("0.2.1-BETA.5+1000", v.ToString());
+            Assert.Equal("0.2.1-BETA.5", v.ToString("C"));
             Assert.Equal("0.2.1", v.ToString("G"));
         }
 
-        [FactAttribute]
+        [Fact]
         public void GeneralEqualGeneral()
         {
             SemanticVersion v = new SemanticVersion(0, 2, 1);
@@ -44,7 +44,7 @@ namespace SemVer.Test
             Assert.True(v.CompareTo(o) == 0);
         }
 
-        [FactAttribute]
+        [Fact]
         public void GeneralBiggerThanGeneral()
         {
             SemanticVersion v = new SemanticVersion(0, 2, 1);
@@ -53,34 +53,34 @@ namespace SemVer.Test
             Assert.True(v.CompareTo(o) == 1);
         }
 
-        [FactAttribute]
+        [Fact]
         public void GeneralBiggerThanPreRelease()
         {
             SemanticVersion v = new SemanticVersion(0, 2, 1);
-            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.ALPHA));
 
             Assert.True(v.CompareTo(o) == 1);
         }
 
-        [FactAttribute]
+        [Fact]
         public void PreReleaseBiggerPreRelease()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Beta));
-            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
+            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.BETA));
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.ALPHA));
 
             Assert.True(v.CompareTo(o) == 1);
         }
 
-        [FactAttribute]
+        [Fact]
         public void PreReleaseLessThanPreRelease()
         {
-            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha));
-            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.Alpha, 1));
+            SemanticVersion v = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.ALPHA));
+            SemanticVersion o = new SemanticVersion(0, 2, 1, new PreRelease(PreReleaseStage.ALPHA, 1));
 
             Assert.True(v.CompareTo(o) < 0);
         }
 
-        [FactAttribute]
+        [Fact]
         public void CompareWithBuild()
         {
             SemanticVersion v = new SemanticVersion(1, 2, 5, new PreRelease(PreReleaseStage.RC, 2), 1000);

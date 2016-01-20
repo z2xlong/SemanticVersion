@@ -22,7 +22,7 @@ namespace SemVer
             uint[] seg = new uint[6];
             char[] chs = str.ToCharArray();
 
-            while (i < chs.Length && s < seg.Length)
+            while (s < seg.Length)
             {
                 switch (brk)
                 {
@@ -42,13 +42,15 @@ namespace SemVer
                     default:
                         return false;
                 }
-                seg[s] = num;
-                brk = chs[i];
-                i += 1;
-                s += 1;
+                seg[s++] = num;
+
+                if (i >= chs.Length)
+                    break;
+
+                brk = chs[i++];
             }
 
-            if (i < chs.Length || s < 2)
+            if (i < chs.Length || s < 3)
                 return false;
 
             PreRelease pre = seg[3] == 0 ? null : new PreRelease((PreReleaseStage)seg[3], seg[4]);
@@ -60,7 +62,7 @@ namespace SemVer
         {
             num = 0;
             uint n = 0;
-            uint? result = 0;
+            uint? result = null;
 
             for (; idx < chs.Length; idx++)
             {
@@ -87,27 +89,31 @@ namespace SemVer
         private static bool TryParseToSemVerPreStage(char[] chs, ref uint idx, out uint num)
         {
             num = 0;
-            sbyte len = 5, e = 0; // max length of PreReleaseStage elements
+            char c;
+            sbyte e = 0, len = 5; // max length of PreReleaseStage elements
             char[] enums = new char[len];
 
             for (; idx < chs.Length; idx++, e++)
             {
-                if ((chs[idx] < 'A' || chs[idx] > 'Z')
-                    && (chs[idx] < 'a' || chs[idx] > 'z'))
+                c = chs[idx];
+
+                if (c >= 'a' && c <= 'z')
+                    c = (char)(c-32);
+
+                if ((c < 'A' || c > 'Z'))
                     break;
 
                 if (e >= len)
                     return false;
 
-                enums[e] = chs[idx];
+                enums[e] = c;
             }
 
             PreReleaseStage pre;
-            if (Enum.TryParse<PreReleaseStage>(new string(enums), out pre))
-                num = (uint)pre;
-            else
+            if (!Enum.TryParse<PreReleaseStage>(new string(enums, 0, e), out pre))
                 return false;
 
+            num = (uint)pre;
             return true;
         }
     }
