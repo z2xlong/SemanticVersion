@@ -26,6 +26,13 @@ namespace SemVer.Test
         }
 
         [Fact]
+        public void BuildCtorTest()
+        {
+            SemanticVersion v = new SemanticVersion(0, 2, 1, 1000);
+            Assert.Equal("0.2.1+1000", v.ToString());
+        }
+
+        [Fact]
         public void FullCtorTest()
         {
             PreRelease pre = new PreRelease(PreReleaseStage.BETA, 5);
@@ -88,5 +95,77 @@ namespace SemVer.Test
 
             Assert.True(v.CompareTo(o) == 0);
         }
+
+        [Fact]
+        public void CompareMajorVersion()
+        {
+            SemanticVersion o = new SemanticVersion(4, 2, 1);
+            SemanticVersion v = new SemanticVersion(5, 2, 1);
+
+            Assert.Equal(1, v.CompareTo(o));
+        }
+
+        [Fact]
+        public void CompareMinorVersion()
+        {
+            SemanticVersion o = new SemanticVersion(4, 3, 1);
+            SemanticVersion v = new SemanticVersion(4, 2, 1);
+
+            Assert.Equal(-1, v.CompareTo(o));
+        }
+
+        [Fact]
+        public void OperatorNotEqualTest()
+        {
+            SemanticVersion o = new SemanticVersion(4, 3, 1);
+            SemanticVersion v = new SemanticVersion(4, 2, 1);
+
+            Assert.True(v != o);
+        }
+
+        [Fact]
+        public void OperatorLessTest()
+        {
+            SemanticVersion o = new SemanticVersion(4, 3, 1);
+            SemanticVersion v = new SemanticVersion(4, 2, 1);
+            Assert.True(v < o);
+        }
+
+        [Fact]
+        public void OperatorAboveTest()
+        {
+            SemanticVersion o = new SemanticVersion(4, 3, 1);
+            SemanticVersion v = new SemanticVersion(4, 2, 1);
+            Assert.True(o > v);
+        }
+
+        [Fact]
+        public void OverridedEqualsTest()
+        {
+            SemanticVersion o = null;
+            SemanticVersion v = new SemanticVersion(4, 2, 1);
+
+            Assert.False(v.Equals(o));
+            Assert.False(v.Equals(new PreRelease(PreReleaseStage.ALPHA)));
+
+            o = v;
+            Assert.True(v.Equals(o));
+
+            o = new SemanticVersion(4, 2, 1);
+            Assert.True(v.Equals(o));
+        }
+
+        [Fact]
+        public void GetHashCodeTest()
+        {
+            SemanticVersion o = new SemanticVersion(4, 2, 1, new PreRelease(PreReleaseStage.ALPHA, 3), 45);
+            SemanticVersion v = o;
+
+            Assert.Equal(o.GetHashCode(), v.GetHashCode());
+
+            v = new SemanticVersion(4, 2, 1, new PreRelease(PreReleaseStage.ALPHA, 3), 45);
+            Assert.Equal(o.GetHashCode(), v.GetHashCode());
+        }
+
     }
 }

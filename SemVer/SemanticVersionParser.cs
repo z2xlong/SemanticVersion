@@ -70,7 +70,7 @@ namespace SemVer
                 {
                     n = (uint)chs[idx] - 48;
 
-                    if (num > _maxTen || (num == _maxTen && n > _maxMod))
+                    if (result > _maxTen || (result == _maxTen && n > _maxMod))
                         return false;
 
                     result = result == null ? n : result * 10 + n;
