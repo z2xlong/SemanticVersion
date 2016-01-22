@@ -27,6 +27,8 @@ namespace SemVer
                 switch (brk)
                 {
                     case '.':
+                        if (s > 2 && s != 4)
+                            return false;
                         if (!TryParseToUint(chs, ref i, out num))
                             return false;
                         break;
@@ -98,7 +100,7 @@ namespace SemVer
                 c = chs[idx];
 
                 if (c >= 'a' && c <= 'z')
-                    c = (char)(c-32);
+                    c = (char)(c - 32);
 
                 if ((c < 'A' || c > 'Z'))
                     break;

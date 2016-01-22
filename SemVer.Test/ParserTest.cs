@@ -108,5 +108,12 @@ namespace SemVer.Test
             SemanticVersion v;
             Assert.False(SemanticVersion.TryParse("2.3.4294967296", out v));
         }
+        
+        [FactAttribute]
+        public void DotPositionTest()
+        {
+            SemanticVersion v;
+            Assert.False(SemanticVersion.TryParse("2.3.4.5.6",out v));
+        }
     }
 }
